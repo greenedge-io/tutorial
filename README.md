@@ -1,10 +1,10 @@
 # Tutorial: How to use FoG API in TensorFlow
 
-This tutorial describes the use of FoG, the distributed GPU computing platform from greenedge.io.
+This tutorial describes the use of FoG, the distributed GPU computing platform from [greenedge.io](http://greenedge.io).
 
 We have modified a publicly [avaliable](https://agray3.github.io/2016/11/29/Demystifying-Data-Input-to-TensorFlow-for-Deep-Learning.html) TensorFlow based training [example](https://agray3.github.io/files/shapesorter.py) such that it could be run on our platform.
 
-There are few requirements that need to be adhered by the main Python script that is uploaded to the fog.greenedge.io website:
+There are few requirements that need to be adhered by the main Python script that is uploaded to the [fog.greenedge.io](https://fog.greenedge.io) website:
 
 * archive (example zip) all other Python scripts (referenced by the main Python script), data and parameter files
 
@@ -40,7 +40,7 @@ Please note that if you are using a Dropbox link, you have to modify the link as
 
 original link provided: `https://www.dropbox.com/[something]/[filename]?dl=0`
 
-change the link to `https://www.dropbox.com/[something]/[filename]?dl=1` (chane `dl=0` to `dl=1`)
+change the link to `https://www.dropbox.com/[something]/[filename]?dl=1` (change `dl=0` to `dl=1`)
 
 ### Thank you for joining FoG community!
 
