@@ -15,7 +15,7 @@ import numpy
 import zipfile
 import requests
 import os
-from drive import upload_file
+from google_drive import upload_file
 ########################################################################### 
 
 # Number of classes is 2 (squares and triangles)
@@ -85,18 +85,6 @@ def getImage(filename):
 ########################################################################### 
 # define the following functions
 
-def extract_zip(file_path, directory_path="."):
-    """function to extract the zip file.
-    the method takes in the file path and the directory
-    name [optional] to extract the file. If the directory
-    name is not specified it would be extracted into the
-    current directory
-    """
-
-    zip_ref = zipfile.ZipFile(file_path, "r")
-    zip_ref.extractall(directory_path)
-    zip_ref.close()
-
 def download_zip(url):
     """ function to download a file from the given url.
     the function returns the filename of the downloaded 
@@ -114,6 +102,27 @@ def download_zip(url):
     output.close()
 
     return file_name
+
+def extract_zip(file_path, directory_path="."):
+    """function to extract the zip file.
+    the method takes in the file path and the directory
+    name [optional] to extract the file. If the directory
+    name is not specified it would be extracted into the
+    current directory
+    """
+
+    zip_ref = zipfile.ZipFile(file_path, "r")
+    zip_ref.extractall(directory_path)
+    zip_ref.close()
+
+def create_zip(zip_name, files):
+    """function to create a zip archive from a set of files
+    """
+    zip_ref = zipfile.ZipFile(zip_name, 'w', zipfile.ZIP_DEFLATED)
+    for file in files:
+        zip_ref.write(file)
+    zip_ref.close()
+
 ########################################################################### 
 
 ########################################################################### 
@@ -126,7 +135,6 @@ extract_zip(file_name)
 os.remove(file_name)
 
 print (" * training is starting ")
-print ()
 ########################################################################### 
 
 # associate the "label" and "image" objects with the corresponding features read from 
@@ -281,6 +289,9 @@ sess.run(tf.global_variables_initializer())
 coord = tf.train.Coordinator()
 threads = tf.train.start_queue_runners(sess=sess,coord=coord)
 
+# define a saver
+saver = tf.train.Saver()
+
 # start training
 nSteps=1000
 for i in range(nSteps):
@@ -306,20 +317,27 @@ for i in range(nSteps):
           x:vbatch_xs, y_: vbatch_ys, keep_prob: 1.0})
       print("step %d, training accuracy %g"%(i+1, train_accuracy))
 
+###########################################################################
+# save
+print (" * saving model")
+save_path = saver.save(sess, "model.ckpt")
+print("Model saved in file: %s" % save_path)
+
+# create zip
+files = [] 
+for file in os.listdir("."):
+    if file.startswith("model.ckpt"):
+        files.append(file)
+print (" * creating zip archive for model")
+create_zip("model.zip", files)
+
+# upload zip
+print (" * uploading the model")
+upload_file("model.zip")
+########################################################################### 
+
 # finalise 
 coord.request_stop()
 coord.join(threads)
-
-########################################################################### 
-# write dummy parameters to a file
-para1 = 10
-para2 = 10.21
-parameters_file = open("parameters.txt", "w")
-parameters_file.write("parameter1 : " + str(para1) + "\n")
-parameters_file.write("parameter2 : " + str(para2) + "\n")
-parameters_file.close()
-########################################################################### 
  
-########################################################################### 
-upload_file("parameters.txt")
-########################################################################### 
+

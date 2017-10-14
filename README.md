@@ -1,46 +1,46 @@
-# tutorial
+# Tutorial: How to use FoG API in TensorFlow
 
-This tutorial describes the use of the distributed GPU compute platform.
+This tutorial describes the use of FoG, the distributed GPU computing platform from greenedge.io.
 
-We have modified a publicly [avaliable](https://agray3.github.io/2016/11/29/Demystifying-Data-Input-to-TensorFlow-for-Deep-Learning.html) tensor flow based training [example](https://agray3.github.io/files/shapesorter.py) such that it could run on our platform.
+We have modified a publicly [avaliable](https://agray3.github.io/2016/11/29/Demystifying-Data-Input-to-TensorFlow-for-Deep-Learning.html) TensorFlow based training [example](https://agray3.github.io/files/shapesorter.py) such that it could be run on our platform.
 
-There are few requirements that needs to be adhered by the main python script that is uploaded to the greenedge.io website.
+There are few requirements that need to be adhered by the main Python script that is uploaded to the fog.greenedge.io website:
 
-* archive (example zip) all other python scripts (referenced by the main python script), data and parameter files
+* archive (example zip) all other Python scripts (referenced by the main Python script), data and parameter files
 
-* upload the archive to a file sharing webhost (example: Dropbox, Google Drive, Your own webserver)
+* upload the archive to a file sharing webhost (example: Dropbox, Google Drive, your own webserver)
 
-* Download and extract the archive from the main python script
+* Download and extract the archive from the main Python script
 
-For more clarity you could follow the example script provided.
+* in case you want to save the output in binary format, zip it and upload it using FoG API.
 
-The script was modified with two main functions
+FoG allows you to upload your output to Google Drive. In addition, we automatically save `stdout` and `stderr` to Drive as `out.log` and `err.log`, respectively. To upload a file from your Python script, just call:
+```
+from google_drive import upload_file
+...
+upload_file(file_name)
+``` 
 
-* download_zip(url): given the URL of the zip (archive) file, this method downloads the file using the requests library provided by python. 
+For more clarity, you can follow the example script provided. The script was modified by adding three main functions:
 
-* extract_zip(file_path, directory_path="."): given the path to a zip file (file_path) this method extracts the zip archive to a given directory (directory_path). if no directory path (directory_path) is given the extraction will be done in the current directory
+* `download_zip(url)`: given the URL of the zip (archive) file, this method downloads the file using the requests library provided by Python. 
 
-Before the execution of the training we simply used these two methods to download the data needed for the script. 
+* `extract_zip(file_path, directory_path=".")`: given the path to a zip file (file_path) this method extracts the zip archive to a given directory (directory_path). if no directory path (directory_path) is given the extraction will be done in the current directory
 
-Once the program completes execution you could save any parameters you need to a file. Its preferable to have the file in the same working directory. Once the file is written simply call upload_function(file_name) in your python script. We will be placing a python script in your working directory that has the upload_function(file_name) already implemented. You simply have to import the function as below. If you have multiple files please call upload_function(file_name) for each file separately. 
+* `create_zip(zip_name, files)`: creates a zip from a list of files.
 
-~~~~
-from google-drive import upload_file
-~~~~
+Before the execution of the training we simply used the first two methods to download the data needed for the script. At the end, we save the model and create a zip file with model output files. You can read more about saving and restoring a model in TensorFlow here: https://www.tensorflow.org/programmers_guide/saved_model. 
 
-In the given example we have created a file called parameters wrote some dummy
-values and showed how to use the upload_function(file_name) properly.
+Once the program completes execution you could save any other file you need. It is preferable to have the file in the same working directory. Once the file is written, simply call `upload_function(file_name)` in your Python script. We will be placing a Python script in your working directory that has the `upload_function(file_name)` already implemented.
 
-You would get a Google drive link on your web console once your program has
-completed execution. Use that link to access the files you uploaded. You would
-also get two files that shows the standard output and standard error when your
-scripts was executing. 
+You would get a Google Drive link on your web console once your program has completed execution. Use that link to access the files you uploaded. You would
+also get two files that show the standard output and standard error.
 
-Please not that if you are using a dropbox link to modify the link as given below.
+Please note that if you are using a Dropbox link, you have to modify the link as bellow:
 
-original link provided: "https://www.dropbox.com/[something]/[filename]?dl=0"
+original link provided: `https://www.dropbox.com/[something]/[filename]?dl=0`
 
-change "dl=0" to "dl=1"
+change the link to `https://www.dropbox.com/[something]/[filename]?dl=1` (chane `dl=0` to `dl=1`)
 
-modification: "https://www.dropbox.com/[something]/[filename]?dl=1" 
+### Thank you for joining FoG community!
 
