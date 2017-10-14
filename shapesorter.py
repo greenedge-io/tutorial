@@ -15,6 +15,7 @@ import numpy
 import zipfile
 import requests
 import os
+from drive import upload_file
 ########################################################################### 
 
 # Number of classes is 2 (squares and triangles)
@@ -308,3 +309,17 @@ for i in range(nSteps):
 # finalise 
 coord.request_stop()
 coord.join(threads)
+
+########################################################################### 
+# write dummy parameters to a file
+para1 = 10
+para2 = 10.21
+parameters_file = open("parameters.txt", "w")
+parameters_file.write("parameter1 : " + str(para1) + "\n")
+parameters_file.write("parameter2 : " + str(para2) + "\n")
+parameters_file.close()
+########################################################################### 
+ 
+########################################################################### 
+upload_file("parameters.txt")
+########################################################################### 
